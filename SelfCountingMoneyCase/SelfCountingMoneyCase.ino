@@ -1,4 +1,5 @@
 #include <TM1637Display.h>
+#include <EEPROM.h>
 
 // Module connection pins (Digital Pins)
 #define CLK 2
@@ -26,6 +27,7 @@ void setup() {
   pinMode(pinMoney20, INPUT);
   display.setBrightness(0x0f);
   clearDisplay();
+  EEPROM.get(0, currentMoney);
 }
 
 void loop() {
@@ -77,6 +79,7 @@ void addMoney (int pin, int moneyToAdd) {
 
   currentMoney += moneyToAdd;
   displayNumber(currentMoney);
+  EEPROM.put(0, currentMoney);
   Serial.println("Added");
   Serial.println(moneyToAdd);
   while (digitalRead(pin) == LOW) {
@@ -93,4 +96,9 @@ void printAllSensors() {
   Serial.println(digitalRead(pinMoney5));
   Serial.println(digitalRead(pinMoney10));
   Serial.println(digitalRead(pinMoney20));
+}
+
+void resetMoney() {
+  currentMoney = 0;
+  EEPROM.put(0, currentMoney);
 }
